@@ -5,7 +5,7 @@ use App\Models\Book;
 use App\Models\Rental;
 use Illuminate\Http\Request;
 use Auth;
-use App\Models\Rental;
+
 
 class RenterController extends Controller
 {
@@ -24,7 +24,7 @@ class RenterController extends Controller
         $rentalDays = 7;
     
         // Calculate the total rental amount
-        $amount = $book->price_per_day * $rentalDays; 
+        $amount = $book->price * $rentalDays; 
         $is_returned = false; 
 
         Rental::create([

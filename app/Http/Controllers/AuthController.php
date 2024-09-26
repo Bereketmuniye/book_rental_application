@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Book;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
@@ -90,7 +91,20 @@ public function toggle(User $user)
         return redirect()->back()->with(['error' => 'Unauthorized'], 401);
     }
     
-    
+    public function destroy($id)
+    {
+        // Find the user by ID
+        $user = User::findOrFail($id);
+
+        // Delete the user
+        $user->delete();
+
+        // Flash a success message to the session
+        Session::flash('success', 'User deleted successfully.');
+
+        // Redirect back to the users list or wherever you want
+        return Redirect()->back()->with("success","successfully destroyed");
+    }
 
     public function logout(Request $request)
 {

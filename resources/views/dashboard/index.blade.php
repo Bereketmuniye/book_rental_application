@@ -65,8 +65,8 @@
                         <div class="card-body p-4">
                             <h5>Live Book Status</h5>
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="booksTable">
-                                    <thead>
+                                <table class="table table-borderless" id="booksTable">
+                                    <thead class="bg-light">
                                         <tr class="text-sm font-monospace">
                                             <th>Title</th>
                                             <th>Author</th>
@@ -85,8 +85,10 @@
                                                 <td>
                                                     @if($book->is_available)
                                                         <span style="color: green;">●</span> Free
-                                                    @else
+                                                    @elseif( $book->is_approved)
                                                         <span style="color: red;">●</span> Rented
+                                                    @else
+                                                         <span style="color:secondary;">●</span> not approved
                                                     @endif
                                                 </td>
                                                 <td>{{ number_format($book->price, 2) }} birr</td>
@@ -119,14 +121,8 @@
                 <div class="col-12 ">
                     <div class="card widget-card border-light shadow-sm">
                         <div class="card-body p-4">
-                            <h5 class="card-title widget-card-title">Sales Overview</h5>
-                            <select class="form-select text-secondary border-light-subtle">
-                                <option value="1">March 2023</option>
-                                <option value="2">April 2023</option>
-                                <option value="3">May 2023</option>
-                                <option value="4">June 2023</option>
-                            </select>
-                            <div id="bsb-chart-1"></div>
+                            <h5 class="card-title widget-card-title"> Overview</h5>
+                            <canvas id="rentalLineChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -179,6 +175,56 @@
                 title: {
                     display: true,
                     text: 'Books by Category'
+                }
+            }
+        }
+    });
+</script>
+<script>
+    // Prepare data for the rental line chart
+    const rentalLabels = @json($chartData['labels']);
+    const rentalData = @json($chartData['data']);
+
+    // Initialize the line chart
+    const ctxRentalLine = document.getElementById('rentalLineChart').getContext('2d');
+    const rentalLineChart = new Chart(ctxRentalLine, {
+        type: 'line', // 'line' type for a continuous wave line chart
+        data: {
+            labels: rentalLabels,
+            datasets: [{
+                label: 'Rental Amount (ETB)',
+                data: rentalData,
+                fill: false, // Do not fill under the line
+                borderColor: 'rgba(54, 162, 235, 1)', // Line color
+                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Point background color
+                pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Point color
+                pointBorderColor: 'rgba(54, 162, 235, 1)',
+                pointHoverBackgroundColor: 'rgba(54, 162, 235, 1)',
+                pointHoverBorderColor: 'rgba(54, 162, 235, 1)',
+                tension: 0.4, // Smooth curve
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true // Start the Y-axis at 0
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Rental Overview by Month'
+                }
+            },
+            elements: {
+                line: {
+                    tension: 0.4 // This makes the line smooth and continuous
                 }
             }
         }

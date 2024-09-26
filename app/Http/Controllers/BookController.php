@@ -53,7 +53,7 @@ class BookController extends Controller
             'quantity' => $request->input('quantity'),
             'price' => $request->input('price'),
             'file' => $filePath, // Use the correct file path here
-            'is_available' => false,
+            'is_available' => true,
             'is_approved' => false,
             'user_id' => Auth::id(),
         ]);
